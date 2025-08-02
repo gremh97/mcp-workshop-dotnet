@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: workshop
+metadata:
+    template: azd-init@1.18.0
+services:
+    mcptodoclient-blazorapp:
+        project: src/McpTodoClient.BlazorApp
+        host: containerapp
+        language: dotnet
+    mcptodoserver-containerapp:
+        project: src/McpTodoServer.ContainerApp
+        host: containerapp
+        language: dotnet
+         # 👇👇👇 Add 👇👇👇
+        docker:
+            path: ../../Dockerfile
+            context: ../../
+            remoteBuild: true
+        # 👆👆👆 Add 👆👆👆
+    my-monkey-app:
+        project: src/MyMonkeyApp
+        host: containerapp
+        language: dotnet
+resources:
+    mcptodoclient-blazorapp:
+        type: host.containerapp
+        port: 8080
+    mcptodoserver-containerapp:
+        type: host.containerapp
+        port: 8080
+    my-monkey-app:
+        type: host.containerapp
+        port: 8080

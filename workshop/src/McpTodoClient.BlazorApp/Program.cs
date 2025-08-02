@@ -4,6 +4,11 @@ using McpTodoClient.BlazorApp.Components;
 
 using Microsoft.Extensions.AI;
 
+// 👇👇👇 Add 👇👇👇
+using ModelContextProtocol.Client;
+using ModelContextProtocol.Protocol;
+// 👆👆👆 Add 👆👆👆
+
 using OpenAI;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +32,33 @@ var chatClient = openAIClient.GetChatClient(modelId).AsIChatClient();
 builder.Services.AddChatClient(chatClient)
                 .UseFunctionInvocation()
                 .UseLogging();
+
+
+// 👇👇👇 Add 👇👇👇
+builder.Services.AddSingleton<IMcpClient>(sp =>
+{
+    var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+
+    var uri = new Uri("http://localhost:5242");
+
+    var clientTransportOptions = new SseClientTransportOptions()
+    {
+        Endpoint = new Uri($"{uri.AbsoluteUri.TrimEnd('/')}/mcp")
+    };
+    var clientTransport = new SseClientTransport(clientTransportOptions, loggerFactory);
+
+    var clientOptions = new McpClientOptions()
+    {
+        ClientInfo = new Implementation()
+        {
+            Name = "MCP Todo Client",
+            Version = "1.0.0",
+        }
+    };
+
+    return McpClientFactory.CreateAsync(clientTransport, clientOptions, loggerFactory).GetAwaiter().GetResult();
+});
+// 👆👆👆 Add 👆👆👆
 
 var app = builder.Build();
 

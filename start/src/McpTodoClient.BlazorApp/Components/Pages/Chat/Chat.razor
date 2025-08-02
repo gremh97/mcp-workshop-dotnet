@@ -2,7 +2,16 @@
 
 @using System.ComponentModel
 
+@* 👇👇👇 Add 👇👇👇 *@
+@using ModelContextProtocol.Client
+@* 👆👆👆 Add 👆👆👆 *@
+
 @inject IChatClient ChatClient
+
+@* 👇👇👇 Add 👇👇👇 *@
+@inject IMcpClient McpClient
+@* 👆👆👆 Add 👆👆👆 *@
+
 
 @implements IDisposable
 
@@ -28,14 +37,19 @@
         ";
 
     private readonly ChatOptions chatOptions = new();
+    // 👇👇👇 Add 👇👇👇
+    private IEnumerable<McpClientTool> tools = null!;
+    // 👆👆👆 Add 👆👆👆
     private readonly List<ChatMessage> messages = new();
     private CancellationTokenSource? currentResponseCancellation;
     private ChatMessage? currentResponseMessage;
     private ChatInput? chatInput;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         messages.Add(new(ChatRole.System, SystemPrompt));
+        tools = await McpClient.ListToolsAsync();
+        chatOptions.Tools = [.. tools];
     }
 
     private async Task AddUserMessageAsync(ChatMessage userMessage)
