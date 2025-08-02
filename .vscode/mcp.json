@@ -1,0 +1,51 @@
+{
+	"servers": {
+		"github": {
+			"type": "http",
+			"url": "https://api.githubcopilot.com/mcp/"
+		},
+		"monkeymcp": {
+			"command": "docker",
+			"args": [
+				"run",
+				"-i",
+				"--rm",
+				"jamesmontemagno/monkeymcp"
+			],
+			"type": "stdio"
+		},
+		"awesome-copilot": {
+			"command": "docker",
+			"args": [
+				"run",
+				"-i",
+				"--rm",
+				"ghcr.io/microsoft/mcp-dotnet-samples/awesome-copilot:stdio"
+			],
+			"type": "stdio"
+		},
+		"context7": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"@upstash/context7-mcp"
+			],
+			"type": "stdio"
+		},
+		"sequentialthinking": {
+			"command": "docker",
+			"args": [
+				"run",
+				"--rm",
+				"-i",
+				"mcp/sequentialthinking"
+			],
+			"type": "stdio"
+		},
+		"mcp-todo": {
+			"url": "http://localhost:5242/mcp",
+			"type": "http"
+		}
+	},
+	"inputs": []
+}
